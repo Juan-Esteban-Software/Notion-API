@@ -1,21 +1,18 @@
 package dev.juest.NotionAPI;
 
+import dev.juest.NotionAPI.interfaces.IPageRequest;
 import dev.juest.httprequest.HttpsRequestManager;
 import dev.juest.httprequest.HttpsResponse;
 
-import java.util.HashMap;
-import java.util.Map;
 
 public class PageRequest implements IPageRequest {
 
     private final HttpsRequestManager requestManager;
-    private final String notionVersion;
 
     //------------------------------------------------------------------------------------------------------------------
 
-    public PageRequest(HttpsRequestManager requestManager,String notionVersion ) {
+    public PageRequest(HttpsRequestManager requestManager) {
         this.requestManager = requestManager;
-        this.notionVersion = notionVersion;
     }
 
 
@@ -24,7 +21,7 @@ public class PageRequest implements IPageRequest {
     @Override
     public String createPage(String newPageJson) {
         String url = "https://api.notion.com/v1/pages";
-        HttpsResponse response = this.requestManager.request(url,this.assemblePost(),newPageJson);
+        HttpsResponse response = this.requestManager.request(url,newPageJson,"POST");
         return response.getMessage();
     }
 
@@ -33,24 +30,19 @@ public class PageRequest implements IPageRequest {
     @Override
     public String deletePage(String pageId) {
 
-        String url ="https://api.notion.com/v1/pages/";
-        String requestURL = url + pageId;
         String jsonBody = "{ \"archived\": true }";
-
-        HttpsResponse response = this.requestManager.request(requestURL,this.assemblePatch(),jsonBody);
-
-        return response.getMessage();
+        return this.updatePage(pageId,jsonBody);
     }
 
     //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    public String updatePage(String pageId, String dataBaseId, String changesJson) {
+    public String updatePage(String pageId, String changesJson) {
 
         String url ="https://api.notion.com/v1/pages/";
         String requestURL = url + pageId;
 
-        HttpsResponse response = this.requestManager.request(requestURL,this.assemblePatch(),changesJson);
+        HttpsResponse response = this.requestManager.request(requestURL,changesJson,"PATCH");
 
         return response.getMessage();
     }
@@ -64,34 +56,11 @@ public class PageRequest implements IPageRequest {
         String url ="https://api.notion.com/v1/pages/";
         String requestURL = url + pageId;
 
-        HttpsResponse response = this.requestManager.request(requestURL, this.assembleGet(),null);
+        HttpsResponse response = this.requestManager.request(requestURL, null,"GET");
         return response.getMessage();
     }
 
     //------------------------------------------------------------------------------------------------------------------
 
-    private Map<String,String> assembleGet(){
-        Map<String,String> request = new HashMap<>();
-        request.put("Authorization", System.getenv("API_KEY"));
-        request.put("Notion-Version", notionVersion);
-        request.put("method","GET");
-        return request;
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-
-    private Map<String,String> assemblePost(){
-        Map<String,String> request = this.assembleGet();
-        request.put("Content-Type", "application/json");
-        return request;
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
-
-    private Map<String,String> assemblePatch(){
-        return assemblePost();
-    }
-
-    //------------------------------------------------------------------------------------------------------------------
 
 }

@@ -1,49 +1,78 @@
 package dev.juest.NotionAPI;
 
-import org.apache.hc.client5.http.classic.methods.HttpPost;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpClient;
-import org.apache.hc.client5.http.impl.classic.CloseableHttpResponse;
-import org.apache.hc.client5.http.impl.classic.HttpClients;
-import org.apache.hc.core5.http.ParseException;
-import org.apache.hc.core5.http.io.entity.EntityUtils;
-import org.apache.hc.core5.http.io.entity.StringEntity;
 
-import java.io.IOException;
+import dev.juest.NotionAPI.interfaces.IDatabaseRequest;
+import dev.juest.httprequest.HttpsRequestManager;
+import dev.juest.httprequest.HttpsResponse;
 
-public class DatabaseRequest implements IDatabaseRequest{
+public class DatabaseRequest implements IDatabaseRequest {
+
+    HttpsRequestManager requestManager;
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    public DatabaseRequest(HttpsRequestManager requestManager) {
+        this.requestManager = requestManager;
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
     public String createDatabase(String json) {
-        return "";
+        String url = "https://api.notion.com/v1/databases";
+        HttpsResponse response = this.requestManager.request(url,json,"POST");
+        return response.getMessage();
     }
 
-    @Override
-    public String filterDatabase(String json) {
-        return "";
-    }
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    public String sortDatabase(String json) {
-        return "";
+    public String filterDatabase(String dataBaseID, String jsonFilter) {
+        return this.queryDatabase(dataBaseID, jsonFilter);
+
     }
 
-    @Override
-    public String queryDatabase() {
-        return "";
-    }
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    public String retrieveDatabase() {
-        return "";
+    public String sortDatabase(String dataBaseID, String jsonSort) {
+        return this.queryDatabase(dataBaseID, jsonSort);
     }
 
-    @Override
-    public String updateDatabase(String json) {
-        return "";
-    }
+    //------------------------------------------------------------------------------------------------------------------
 
     @Override
-    public String updateDatabaseProperties() {
-        return "";
+    public String queryDatabase(String dataBaseID, String jsonQuery) {
+        String url = "https://api.notion.com/v1/databases/"+ dataBaseID + "/query";
+        HttpsResponse response = this.requestManager.request(url, jsonQuery,"POST");
+        return response.getMessage();
     }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public String retrieveDatabase(String dataBaseID) {
+        String url = "https://api.notion.com/v1/databases/" + dataBaseID;
+        HttpsResponse response = this.requestManager.request(url, null, "GET");
+        return response.getMessage();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public String updateDatabase(String dataBaseID, String jsonUpdate) {
+        String url = "https://api.notion.com/v1/databases/" + dataBaseID;
+        HttpsResponse response = this.requestManager.request(url,jsonUpdate, "PATCH");
+        return response.getMessage();
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
+    @Override
+    public String updateDatabaseProperties(String dataBaseID, String jsonPropertiesUpdate ) {
+        return this.updateDatabase(dataBaseID, jsonPropertiesUpdate);
+    }
+
+    //------------------------------------------------------------------------------------------------------------------
+
 }
