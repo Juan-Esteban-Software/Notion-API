@@ -10,7 +10,7 @@ public interface IDatabaseRequest {
 
     String queryDatabase(String dataBaseID, String jsonQuery);
 
-    String retrieveDatabase(String dataBas eID);
+    String retrieveDatabase(String dataBaseID);
 
     String updateDatabase(String dataBaseID, String jsonUpdate);
 
