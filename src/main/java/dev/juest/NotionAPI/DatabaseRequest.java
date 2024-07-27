@@ -4,10 +4,11 @@ package dev.juest.NotionAPI;
 import dev.juest.NotionAPI.interfaces.IDatabaseRequest;
 import dev.juest.httprequest.HttpsRequestManager;
 import dev.juest.httprequest.HttpsResponse;
+import dev.juest.httprequest.interfaces.IHttpsRequestManager;
 
 public class DatabaseRequest implements IDatabaseRequest {
 
-    HttpsRequestManager requestManager;
+    IHttpsRequestManager requestManager;
 
     //------------------------------------------------------------------------------------------------------------------
 

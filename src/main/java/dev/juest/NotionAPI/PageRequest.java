@@ -3,11 +3,12 @@ package dev.juest.NotionAPI;
 import dev.juest.NotionAPI.interfaces.IPageRequest;
 import dev.juest.httprequest.HttpsRequestManager;
 import dev.juest.httprequest.HttpsResponse;
+import dev.juest.httprequest.interfaces.IHttpsRequestManager;
 
 
 public class PageRequest implements IPageRequest {
 
-    private final HttpsRequestManager requestManager;
+    private final IHttpsRequestManager requestManager;
 
     //------------------------------------------------------------------------------------------------------------------
 
